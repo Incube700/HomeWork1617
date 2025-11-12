@@ -24,20 +24,20 @@ public class GameStarter : MonoBehaviour
     {
         for (int i = 0; i < _spawns.Count; i++)
         {
-            SpawnEntry e = _spawns[i];
+            SpawnEntry entry = _spawns[i];
 
-            Vector3 pos = e.point != null ? e.point.position : Vector3.zero;
-            GameObject enemy = Instantiate(_enemyPrefab, pos, Quaternion.identity);
+            Vector3 position = entry.point != null ? entry.point.position : Vector3.zero;
+            GameObject enemy = Instantiate(_enemyPrefab, position, Quaternion.identity);
 
             if (enemy.GetComponent<CharacterMover>() == null)      enemy.AddComponent<CharacterMover>();
             if (enemy.GetComponent<DistanceAggroSensor>() == null) enemy.AddComponent<DistanceAggroSensor>();
 
-            EnemyController ctrl = enemy.GetComponent<EnemyController>();
-            if (ctrl == null) ctrl = enemy.AddComponent<EnemyController>();
+            EnemyController controller = enemy.GetComponent<EnemyController>();
+            if (controller == null) controller = enemy.AddComponent<EnemyController>();
 
-            WaypointPath path = e.routeOverride != null ? e.routeOverride : _sharedPath;
+            WaypointPath path = entry.routeOverride != null ? entry.routeOverride : _sharedPath;
 
-            ctrl.Initialize(_player, e.idle, e.alert, path);
+            controller.Initialize(_player, entry.idle, entry.alert, path);
         }
     }
 }

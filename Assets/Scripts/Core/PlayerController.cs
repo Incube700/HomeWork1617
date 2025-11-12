@@ -3,9 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterMover))]
 public class PlayerController : MonoBehaviour
 {
-    private const float PlayerSpeed = 4.0f; // скорость игрока
-
+    private const float PlayerSpeed = 7.0f;
     private CharacterMover _mover;
+    private Vector3 _inputDir;
 
     private void Awake()
     {
@@ -16,11 +16,14 @@ public class PlayerController : MonoBehaviour
     {
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
+        _inputDir = new Vector3(h, 0f, v).normalized;
+    }
 
-        Vector3 dir = new Vector3(h, 0f, v).normalized;
-        if (dir.sqrMagnitude > 0f)
+    private void FixedUpdate()
+    {
+        if (_inputDir.sqrMagnitude > 0f)
         {
-            _mover.MoveTowards(transform.position + dir, PlayerSpeed, Time.deltaTime);
+            _mover.MoveTowards(transform.position + _inputDir, PlayerSpeed, Time.fixedDeltaTime);
         }
     }
 }

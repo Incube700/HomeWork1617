@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(DistanceAggroSensor))]
 public class EnemyController : MonoBehaviour
 {
-    private const float EnemySpeed = 2.6f;
+    private const float EnemySpeed = 4.0f;
 
     private Transform _player;
     private CharacterMover _mover;
@@ -34,15 +34,15 @@ public class EnemyController : MonoBehaviour
         }
 
         bool isAggro = _sensor.IsAggro(transform, _player);
-        float dt = Time.fixedDeltaTime;
+        float deltaTime = Time.fixedDeltaTime;
 
         if (isAggro == false)
         {
-            _idle.Tick(transform, _mover, dt);
+            _idle.Tick(transform, _mover, deltaTime);
         }
         else
         {
-            _alert.Tick(transform, _player, _mover, dt);
+            _alert.Tick(transform, _player, _mover, deltaTime);
         }
     }
 }

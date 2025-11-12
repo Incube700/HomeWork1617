@@ -1,40 +1,47 @@
 using UnityEngine;
 
-[DisallowMultipleComponent]
 public class CharacterMover : MonoBehaviour
 {
-    [SerializeField] private float _turnLerpSpeed = 10.0f; // плавность поворота
+    
+    private const float TurnSpeed = 7.0f;
+    private const float DefaultSpeed = 4.0f;
+
     private Rigidbody _rigidbody;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
     }
-
-    // Перегрузка со скоростью: все вызывают именно её
+    
     public void MoveTowards(Vector3 targetWorldPosition, float speedMetersPerSecond, float deltaTime)
     {
         Vector3 toTarget = targetWorldPosition - transform.position;
-        toTarget.y = 0f;
+        toTarget.y = 0f; 
 
         if (toTarget.sqrMagnitude <= 0.0001f)
         {
             return;
         }
+        
+        float speed = speedMetersPerSecond > 0f ? speedMetersPerSecond : DefaultSpeed;
 
         Vector3 direction = toTarget.normalized;
-        Vector3 delta = direction * speedMetersPerSecond * deltaTime;
+        Vector3 step = direction * speed * deltaTime;
 
         if (_rigidbody != null)
         {
-            _rigidbody.MovePosition(_rigidbody.position + delta);
+            _rigidbody.MovePosition(_rigidbody.position + step);
         }
         else
         {
-            transform.position += delta;
+            transform.position += step;
         }
-
-        Quaternion look = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, look, _turnLerpSpeed * deltaTime);
+        
+        Vector3 flatDir = new Vector3(direction.x, 0f, direction.z);
+        if (flatDir.sqrMagnitude > 0.0001f)
+        {
+            Quaternion look = Quaternion.LookRotation(flatDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, look, TurnSpeed * deltaTime);
+        }
     }
 }
