@@ -14,7 +14,7 @@ public class DistanceAggroSensor : MonoBehaviour
         return sqr <= limit;
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, AggroRadiusMeters);

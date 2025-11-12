@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class CharacterMover : MonoBehaviour
 {
-    
     private const float TurnSpeed = 7.0f;
     private const float DefaultSpeed = 4.0f;
 
