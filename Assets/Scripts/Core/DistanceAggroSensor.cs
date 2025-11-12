@@ -1,22 +1,17 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class DistanceAggroSensor : MonoBehaviour
 {
-    private const float AggroRadiusMeters = 7.0f;
+    private const float AggroRadiusMeters = 6.0f;
 
     public bool IsAggro(Transform self, Transform player)
     {
-        Vector3 selfXZ = new Vector3(self.position.x, 0f, self.position.z);
-        Vector3 playerXZ = new Vector3(player.position.x, 0f, player.position.z);
+        Vector3 a = new Vector3(self.position.x, 0f, self.position.z);
+        Vector3 b = new Vector3(player.position.x, 0f, player.position.z);
 
-        float distance = (selfXZ - playerXZ).magnitude;
+        float sqr = (a - b).sqrMagnitude;
         float limit = AggroRadiusMeters * AggroRadiusMeters;
-
-        bool isInsideAggroRadius = distance <= limit;
-        return isInsideAggroRadius;
+        return sqr <= limit;
     }
 
     private void OnDrawGizmosSelected()
