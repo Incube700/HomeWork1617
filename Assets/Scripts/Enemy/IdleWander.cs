@@ -1,28 +1,41 @@
 using UnityEngine;
 
-public class IdleWander : IIdleBehavior
+public class IdleWander : IEnemyBehavior
 {
+    private readonly Transform _self;
+    private readonly CharacterMover _mover;
     private readonly float _speed;
-    private Vector3 _dir;
-    private float _timer;
 
+    private Vector3 _currentTarget;
+    private float _changeTimer;
     private const float ChangeInterval = 1.0f;
 
-    public IdleWander(float speedMetersPerSecond)
+    public IdleWander(Transform self, CharacterMover mover, float speedMetersPerSecond)
     {
+        _self  = self;
+        _mover = mover;
         _speed = speedMetersPerSecond;
+        PickNewDirection();
     }
 
-    public void Tick(Transform self, CharacterMover mover, float dt)
+    public void Tick(float dt)
     {
-        _timer -= dt;
-        if (_timer <= 0f)
+        _changeTimer -= dt;
+        if (_changeTimer <= 0f)
         {
-            Vector2 r = Random.insideUnitCircle.normalized;
-            _dir = new Vector3(r.x, 0f, r.y);
-            _timer = ChangeInterval;
+            PickNewDirection();
         }
 
-        mover.MoveTowards(self.position + _dir, _speed, dt);
+        _mover.MoveTowards(_currentTarget, _speed, dt);
+    }
+
+    private void PickNewDirection()
+    {
+        _changeTimer = ChangeInterval;
+
+        Vector2 circle = Random.insideUnitCircle.normalized;
+        Vector3 dir = new Vector3(circle.x, 0f, circle.y);
+
+        _currentTarget = _self.position + dir;
     }
 }

@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class IdleStay : IIdleBehavior
+public class IdleStay : IEnemyBehavior
 {
-    public void Tick(Transform self, CharacterMover mover, float deltaTime)
+    public void Tick(float deltaTime)
     {
-        // стоим
+        // стоим, ничего не делаем
     }
 }

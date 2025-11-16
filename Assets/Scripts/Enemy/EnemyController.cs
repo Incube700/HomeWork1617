@@ -4,45 +4,32 @@ using UnityEngine;
 [RequireComponent(typeof(DistanceAggroSensor))]
 public class EnemyController : MonoBehaviour
 {
-    private const float EnemySpeed = 4.0f;
-
-    private Transform _player;
-    private CharacterMover _mover;
     private DistanceAggroSensor _sensor;
 
-    private IIdleBehavior _idle;
-    private IAlertBehavior _alert;
+    private IEnemyBehavior _idleBehavior;
+    private IEnemyBehavior _alertBehavior;
+    private IEnemyBehavior _currentBehavior;
 
-    public void Initialize(Transform player,
-        IdleBehaviorType idleType,
-        AlertBehaviorType alertType,
-        WaypointPath sharedPath)
+    public void Initialize(DistanceAggroSensor sensor,
+        IEnemyBehavior idleBehavior,
+        IEnemyBehavior alertBehavior)
     {
-        _player = player;
-        _mover  = GetComponent<CharacterMover>();
-        _sensor = GetComponent<DistanceAggroSensor>();
-
-        _idle  = BehaviorFactory.CreateIdle(idleType,  sharedPath, EnemySpeed);
-        _alert = BehaviorFactory.CreateAlert(alertType, EnemySpeed);
+        _sensor        = sensor;
+        _idleBehavior  = idleBehavior;
+        _alertBehavior = alertBehavior;
+        _currentBehavior = _idleBehavior;
     }
 
     private void FixedUpdate()
     {
-        if (_player == null || _mover == null || _sensor == null)
+        if (_sensor == null || _idleBehavior == null || _alertBehavior == null)
         {
             return;
         }
 
-        bool isAggro = _sensor.IsAggro(transform, _player);
-        float deltaTime = Time.fixedDeltaTime;
+        bool isAggro = _sensor.IsAggro();
+        _currentBehavior = isAggro ? _alertBehavior : _idleBehavior;
 
-        if (isAggro == false)
-        {
-            _idle.Tick(transform, _mover, deltaTime);
-        }
-        else
-        {
-            _alert.Tick(transform, _player, _mover, deltaTime);
-        }
+        _currentBehavior.Tick(Time.fixedDeltaTime);
     }
 }

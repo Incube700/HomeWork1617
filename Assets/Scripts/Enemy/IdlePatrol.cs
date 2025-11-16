@@ -1,31 +1,37 @@
 using UnityEngine;
 
-public class IdlePatrol : IIdleBehavior
+public class IdlePatrol : IEnemyBehavior
 {
+    private readonly Transform _self;
+    private readonly CharacterMover _mover;
     private readonly WaypointPath _path;
     private readonly float _speed;
+
     private int _index;
     private const float ReachDistance = 0.30f;
 
-    public IdlePatrol(WaypointPath path, float speedMetersPerSecond)
+    public IdlePatrol(Transform self, CharacterMover mover, WaypointPath path, float speedMetersPerSecond)
     {
-        _path = path;
+        _self  = self;
+        _mover = mover;
+        _path  = path;
         _speed = speedMetersPerSecond;
         _index = 0;
     }
 
-    public void Tick(Transform self, CharacterMover mover, float dt)
+    public void Tick(float dt)
     {
         if (_path == null || _path.Count < 2)
+        {
             return;
+        }
 
         Vector3 target = _path.GetPoint(_index);
 
-        // --- игнорируем Y при проверке расстояния ---
-        Vector3 selfXZ = new Vector3(self.position.x, 0f, self.position.z);
-        Vector3 targetXZ = new Vector3(target.x, 0f, target.z);
-        float distance = Vector3.Distance(selfXZ, targetXZ);
-        // -------------------------------------------
+        // сравниваем только по XZ, чтобы не залипать по высоте
+        Vector3 selfXZ   = new Vector3(_self.position.x, 0f, _self.position.z);
+        Vector3 targetXZ = new Vector3(target.x,        0f, target.z);
+        float distance   = Vector3.Distance(selfXZ, targetXZ);
 
         if (distance <= ReachDistance)
         {
@@ -33,6 +39,6 @@ public class IdlePatrol : IIdleBehavior
             target = _path.GetPoint(_index);
         }
 
-        mover.MoveTowards(target, _speed, dt);
+        _mover.MoveTowards(target, _speed, dt);
     }
 }

@@ -1,10 +1,16 @@
 using UnityEngine;
 
-public class AlertPanicDie : IAlertBehavior
+public class AlertPanicDie : IEnemyBehavior
 {
-    public void Tick(Transform self, Transform player, CharacterMover mover, float dt)
+    private readonly Transform _self;
+
+    public AlertPanicDie(Transform self)
     {
-        Object.Destroy(self.gameObject);
-       //тут нужно заспавнить партикл
+        _self = self;
+    }
+
+    public void Tick(float dt)
+    {
+        Object.Destroy(_self.gameObject);
     }
 }
