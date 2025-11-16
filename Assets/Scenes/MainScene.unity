@@ -824,7 +824,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 1598600871}
-  _enemyPrefab: {fileID: 4442728537677505477, guid: 7a0aecbdf0cc14e24a50482e28bb0d4b,
+  _enemyPrefab: {fileID: 3581401053741079025, guid: 7a0aecbdf0cc14e24a50482e28bb0d4b,
     type: 3}
   _sharedPath: {fileID: 1070634017}
   _spawns:
